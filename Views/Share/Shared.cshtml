@@ -1,0 +1,23 @@
+﻿@model Snappass.Models.GeneratedPassword
+@{
+    ViewData["Title"] = "ViewPassword";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<div class="container">
+    <section>
+        <div class="page-header"><h1>Share Secret Link</h1></div>
+        <p>The secret has been temporarily saved. Send the following URL to your intended recipient.</p>
+        <div class="input-group">
+            <input type="text" class="form-control" id="password-link" cols="50" value="@Model.Uri" readonly="readonly">
+            <span class="input-group-btn margin-bottom-10">
+                <button title="Copy to clipboard" type="button" class="btn btn-primary copy-clipboard-btn"
+                        id="copy-clipboard-btn" data-clipboard-target="#password-link"
+                        data-placement='bottom'>
+                    <i class="fa fa-clipboard"></i>
+                </button>
+            </span>
+        </div>
+    </section>
+</div>
+<script src="~/js/clipboard_button.js"></script>

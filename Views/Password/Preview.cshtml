@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "ViewPassword";
+    Layout = "~/Views/_Layout.cshtml";
+}
+<div class="container">
+    <section id="preview">
+        <div class="page-header">
+            <h1>Secret</h1>
+        </div>
+        <p class="lead">You can only reveal this secret once!</p>
+        <div class="row">
+            <div class="col-sm-6 margin-bottom-10">
+                <button id="revealSecret" type="button" class="btn-lg btn-primary">Reveal secret</button>
+            </div>
+        </div>
+    </section>
+    <section id="revealed">
+        <p>Save the following secret to a secure location.</p>
+        <div class="input-group">
+            <textarea class="form-control" rows="10" cols="50" id="password-text" name="password-text" readonly="readonly">@Model.Key</textarea>
+            <button title="Copy to clipboard" type="button" class="btn btn-primary copy-clipboard-btn"
+                    id="copy-clipboard-btn" data-clipboard-target="#password-text"
+                    data-placement='bottom'>
+                <i class="fa fa-clipboard"></i>
+            </button>
+        </div>
+        <p>The secret has now been permanently deleted from the system, and the URL will no longer work. Refresh this page to verify.</p>
+    </section>
+</div>
+<script src="~/js/preview.js"></script>
+<script src="~/js/clipboard_button.js"></script>

@@ -1,0 +1,24 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+.break-word {
+    word-wrap: break-word;
+}
+
+.margin-bottom-10 {
+    margin-bottom: 10px;
+}
+
+input[readonly].readonly-text {
+    background-color: #fff;
+    cursor: text;
+}
+#revealed {
+    display: none;
+}
+.logo {
+    width: 50%;
+    padding-right: 1em;
+}
