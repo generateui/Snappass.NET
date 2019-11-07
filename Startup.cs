@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace Snappass
 {
@@ -20,6 +22,12 @@ namespace Snappass
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddHsts(options =>
+            {
+                options.MaxAge = TimeSpan.FromDays(6 * 31); // https://www.ncsc.nl/onderwerpen/verbindingsbeveiliging
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+            });
             services.AddSingleton<IMemoryStore, MemoryStore>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
@@ -36,6 +44,14 @@ namespace Snappass
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.Use(async (context, next) => {
+                context.Response.Headers.Add("Content-Security-Policy","script-src 'self'; style-src 'self'; img-src 'self'");
+                context.Response.Headers.Add("X-Xss-Protection", "1");
+                context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+                context.Response.Headers.Add("X-Frame-Options", "DENY");
+                context.Response.Headers.Add("Referrer-Policy", "no-referrer");
+                await next();
+            });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
