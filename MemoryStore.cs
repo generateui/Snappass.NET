@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 
 namespace Snappass
@@ -20,6 +21,12 @@ namespace Snappass
         }
 
         private readonly Dictionary<string, Item> _items = new Dictionary<string, Item>();
+        private readonly ILogger<MemoryStore> _logger;
+
+        public MemoryStore(ILogger<MemoryStore> logger)
+        {
+            _logger = logger;
+        }
 
         public bool Has(string key) => _items.ContainsKey(key);
 
@@ -39,22 +46,33 @@ namespace Snappass
         {
             if (key == null)
             {
+                _logger.Log(LogLevel.Warning, $@"Tried to retrieve null key");
                 return null;
             }
             if (!_items.ContainsKey(key))
             {
+                _logger.Log(LogLevel.Warning, $@"Tried to retrieve password for unknown key [{key}]");
                 return null;
             }
             var item = _items[key];
-            DateTime calculatedDate = item.StoredDateTime;
-            switch(item.TimeToLive)
+            DateTime GetAtTheLatest(TimeToLive ttl) => ttl switch
             {
-                case TimeToLive.Day: calculatedDate.AddDays(1); break;
-                case TimeToLive.Week: calculatedDate.AddDays(7); break;
-                case TimeToLive.Hour: calculatedDate.AddHours(1); break;
-            }
-            if (calculatedDate > DateTime.Now)
+                TimeToLive.Day => item.StoredDateTime.AddDays(1),
+                TimeToLive.Week => item.StoredDateTime.AddDays(7),
+                TimeToLive.Hour => item.StoredDateTime.AddHours(1),
+            };
+            DateTime atTheLatest = GetAtTheLatest(item.TimeToLive);
+            if (DateTime.Now > atTheLatest)
             {
+                static string ToString(TimeToLive ttl) => ttl switch
+                {
+                    TimeToLive.Week => "week",
+                    TimeToLive.Day => "day",
+                    TimeToLive.Hour => "hour",
+                };
+                var ttlString = ToString(item.TimeToLive);
+                _logger.Log(LogLevel.Warning, $@"Tried to retrieve password for key [{key}] after date is expired. Key set at [{item}] for 1 [{ttlString}]");
+                _items.Remove(key); // ensure "read-once" is implemented
                 return null;
             }
             _items.Remove(key); // ensure "read-once" is implemented

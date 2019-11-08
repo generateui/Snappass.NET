@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Snappass.Models;
 
 namespace Snappass.Controllers
@@ -6,10 +7,12 @@ namespace Snappass.Controllers
     public class PasswordController : Controller
     {
         private readonly IMemoryStore _memoryStore;
+        private readonly ILogger<PasswordController> _logger;
 
-        public PasswordController(IMemoryStore memoryStore)
+        public PasswordController(IMemoryStore memoryStore, ILogger<PasswordController> logger)
         {
             _memoryStore = memoryStore;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -17,6 +20,7 @@ namespace Snappass.Controllers
         {
             if (!_memoryStore.Has(key))
             {
+                _logger.LogWarning($@"password with key {key} requested, but not found");
                 return NotFound();
             }
             string encryptedPassword = _memoryStore.Retrieve(key);
