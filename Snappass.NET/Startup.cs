@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Data.SQLite;
 
 namespace Snappass
 {
@@ -28,8 +29,15 @@ namespace Snappass
                 options.Preload = true;
                 options.IncludeSubDomains = true;
             });
-            services.AddSingleton<IMemoryStore, MemoryStore>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IMemoryStore, SqliteStore>();
+			services.AddSingleton<IDateTimeProvider, CurrentDateTimeProvider>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // required for MemoryStore
+			services.AddScoped(sp =>
+			{
+				var databaseFilePath = @"database.sqlite";
+				var connectionString = $@"Data Source={databaseFilePath};Version=3;";
+				return new SQLiteConnection(connectionString);
+			});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
