@@ -71,18 +71,22 @@ namespace Snappass
                 TimeToLive.Day => item.StoredDateTime.AddDays(1),
                 TimeToLive.Week => item.StoredDateTime.AddDays(7),
                 TimeToLive.Hour => item.StoredDateTime.AddHours(1),
+                TimeToLive.TwoWeeks => item.StoredDateTime.AddDays(14),
+                _ => item.StoredDateTime.AddHours(1),
             };
             DateTime atTheLatest = GetAtTheLatest(item.TimeToLive);
             if (_dateTimeProvider.Now > atTheLatest)
             {
                 static string ToString(TimeToLive ttl) => ttl switch
                 {
-                    TimeToLive.Week => "week",
-                    TimeToLive.Day => "day",
-                    TimeToLive.Hour => "hour",
+                    TimeToLive.Week => "1 week",
+                    TimeToLive.Day => "1 day",
+                    TimeToLive.Hour => "1 hour",
+                    TimeToLive.TwoWeeks => "2 weeks",
+                    _ => "1 hour",
                 };
                 var ttlString = ToString(item.TimeToLive);
-                _logger.Log(LogLevel.Warning, $@"Tried to retrieve password for key [{key}] after date is expired. Key set at [{item.StoredDateTime}] for 1 [{ttlString}]");
+                _logger.Log(LogLevel.Warning, $@"Tried to retrieve password for key [{key}] after date is expired. Key set at [{item.StoredDateTime}] for [{ttlString}]");
                 _items.Remove(key); // ensure "read-once" is implemented
                 return null;
             }
