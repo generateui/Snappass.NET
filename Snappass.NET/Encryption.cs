@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Fernet;
 
 namespace Snappass
@@ -31,13 +32,13 @@ namespace Snappass
             var decryptionKey = string.Empty;
 
             if (tokenFragments.Length > 1)
-                decryptionKey = tokenFragments[1];
+                decryptionKey = WebUtility.UrlDecode(tokenFragments[1]);
 
             return (storageKey, decryptionKey);
         }
         public static string CreateToken(string storageKey, string encryptionKey)
         {
-            var token = string.Join(tokenSeparator, storageKey, encryptionKey);
+            var token = string.Join(tokenSeparator, storageKey, WebUtility.UrlEncode(encryptionKey));
 
             return token;
 
