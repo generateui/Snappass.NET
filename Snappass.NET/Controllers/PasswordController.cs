@@ -16,6 +16,7 @@ namespace Snappass.Controllers
         }
 
         [HttpGet]
+        [HttpPost]
         public IActionResult Preview(string key)
         {
             (string storageKey, string encryptionKey) = Encryption.ParseToken(key);
@@ -24,9 +25,14 @@ namespace Snappass.Controllers
                 _logger.LogWarning($@"password with key {storageKey} requested, but not found");
                 return NotFound();
             }
-            string encryptedPassword = _memoryStore.Retrieve(storageKey);
-            string decrypted = Encryption.Decrypt(encryptedPassword, encryptionKey);
-            return View("Preview", new PreviewModel { Key = decrypted });
+            if (HttpContext.Request.Method == "POST")
+            {
+                string encryptedPassword = _memoryStore.Retrieve(storageKey);
+                string decrypted = Encryption.Decrypt(encryptedPassword, encryptionKey);
+                return View("Password", new PreviewModel { Key = decrypted });
+            }
+                
+             return View("Preview");
         }
     }
 }
