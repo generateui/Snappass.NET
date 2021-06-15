@@ -1,6 +1,9 @@
 (function () {
     $('#revealSecret').click(function (e) {
-        $('#revealed').show();
-        $('#revealSecret').prop("disabled", true);
+        var form = $('<form/>')
+          .attr('id', 'revealSecretForm')
+          .attr('method', 'post');
+        form.appendTo($('body'));
+        form.submit();
     });
 })();
