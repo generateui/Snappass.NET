@@ -18,13 +18,14 @@ namespace Snappass.Controllers
         [HttpGet]
         public IActionResult Preview(string key)
         {
-            if (!_memoryStore.Has(key))
+            (string storageKey, string encryptionKey) = Encryption.ParseToken(key);
+            if (!_memoryStore.Has(storageKey))
             {
-                _logger.LogWarning($@"password with key {key} requested, but not found");
+                _logger.LogWarning($@"password with key {storageKey} requested, but not found");
                 return NotFound();
             }
-            string encryptedPassword = _memoryStore.Retrieve(key);
-            string decrypted = Encryption.Decrypt(encryptedPassword, key);
+            string encryptedPassword = _memoryStore.Retrieve(storageKey);
+            string decrypted = Encryption.Decrypt(encryptedPassword, encryptionKey);
             return View("Preview", new PreviewModel { Key = decrypted });
         }
     }
