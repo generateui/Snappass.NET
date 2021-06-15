@@ -2,6 +2,6 @@
 {
     public enum TimeToLive
     {
-        Week, Day, Hour
+        Week, Day, Hour, TwoWeeks
     }
 }
