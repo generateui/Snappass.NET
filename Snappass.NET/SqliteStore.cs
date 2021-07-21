@@ -46,6 +46,7 @@ namespace Snappass
 					0 => TimeToLive.Hour,
 					1 => TimeToLive.Day,
 					2 => TimeToLive.Week,
+					3 => TimeToLive.TwoWeeks,
 					_ => TimeToLive.Hour,
 				};
 			}
@@ -103,6 +104,7 @@ namespace Snappass
 				TimeToLive.Day => dateTime.AddDays(1),
 				TimeToLive.Week => dateTime.AddDays(7),
 				TimeToLive.Hour => dateTime.AddHours(1),
+				TimeToLive.TwoWeeks => dateTime.AddDays(14),
 				_ => dateTime.AddHours(1)
 			};
 			DateTime atTheLatest = GetAtTheLatest(secret.TimeToLive, secret.StoredDateTime);
@@ -110,13 +112,14 @@ namespace Snappass
 			{
 				static string ToString(TimeToLive ttl) => ttl switch
 				{
-					TimeToLive.Week => "week",
-					TimeToLive.Day => "day",
-					TimeToLive.Hour => "hour",
+					TimeToLive.Week => "1 week",
+					TimeToLive.Day => "1 day",
+					TimeToLive.Hour => "1 hour",
+					TimeToLive.TwoWeeks => "2 weeks",
 					_ => "hour"
 				};
 				var ttlString = ToString(secret.TimeToLive);
-				_logger.Log(LogLevel.Warning, $@"Tried to retrieve password for key [{key}] after date is expired. Key set at [{secret.StoredDateTime}] for 1 [{ttlString}]");
+				_logger.Log(LogLevel.Warning, $@"Tried to retrieve password for key [{key}] after date is expired. Key set at [{secret.StoredDateTime}] for [{ttlString}]");
 				Remove(key);
 				return null;
 			}
