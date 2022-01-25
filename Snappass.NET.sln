@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29411.108
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snappass.NET", "Snappass.NET\Snappass.NET.csproj", "{9D5B2889-491B-4E44-B00D-4DA803197031}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snappass.NET.UnitTest", "Snappass.NET.UnitTest\Snappass.NET.UnitTest.csproj", "{2B880861-D49F-4C86-AB15-67BC84D5933A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snappass.NET.UnitTest", "Snappass.NET.UnitTest\Snappass.NET.UnitTest.csproj", "{2B880861-D49F-4C86-AB15-67BC84D5933A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
